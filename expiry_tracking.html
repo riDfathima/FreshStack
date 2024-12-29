@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+    <title>Expiry Tracking - FreshStack</title>
+    <style>
+        body {
+            font-family: Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: rgb(252, 141, 197);
+            color: rgb(218, 57, 57);
+            padding: 20px;
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: 60px auto;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            border: 3px solid #f4baba;
+            padding: 8px;
+        }
+        table th {
+            background-color: #b6e2ee;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+
+<body>
+
+<header><h1>Expiry Tracking🧾</h1>
+    
+</header>
+
+<main>
+    <!-- Back to Dashboard Button -->
+    <div style="text-align:center; margin-bottom: 20px;">
+       
+    </div>
+
+    <!-- Add Product Button -->
+    <div style="text-align:center; margin-bottom: 20px;">
+        <button onclick="addProduct()">Add Product</button>
+    </div>
+
+    <!-- Expiry Tracking Table -->
+    <table id="expiry-table">
+        <thead>
+          <tr><th>Product Name</th><th>Expiry Date</th><th>Actions</th></tr></thead>
+
+          <!-- Table Body -->
+          <tbody id="expiry-body">
+              <!-- Example Rows -->
+              <tr>
+                  <td>Milk</td>
+                  <td contenteditable="false">31-12-2024</td>
+                  <td>
+                      <button onclick="editRow(this)">Edit</button>
+                      <button onclick="saveRow(this)" style="display:none;">Save</button>
+                      <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                  </td>
+              </tr>
+              <tr>
+                  <td>Bread</td>
+                  <td contenteditable="false">31-12-2024</td>
+                  <td>
+                      <button onclick="editRow(this)">Edit</button>
+                      <button onclick="saveRow(this)" style="display:none;">Save</button>
+                      <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                  </td>
+              </tr>
+
+          </tbody>
+
+      </table>
+
+<script>
+// Load expiry tracking data from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+    const storedData = localStorage.getItem('expiryTable');
+    const expiryTable = storedData ? JSON.parse(storedData) : [];
+
+    renderTable(expiryTable);
+});
+
+// Function to render the expiry tracking table
+function renderTable(expiryTable) {
+    const tableBody = document.getElementById('expiry-body');
+    tableBody.innerHTML = ''; // Clear existing rows
+
+    expiryTable.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.name}</td>
+            <td contenteditable="false">${item.expiryDate}</td>
+            <td>
+                <button onclick="editRow(this)">Edit</button>
+                <button onclick="saveRow(this)" style="display:none;">Save</button>
+                <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+            </td>`;
+        tableBody.appendChild(row);
+    });
+}
+
+// Function to add a new product
+function addProduct() {
+    const storedData = localStorage.getItem('expiryTable');
+    const expiryTable = storedData ? JSON.parse(storedData) : [];
+
+    // Create a new product entry with default values
+    const newProduct = { name: 'New Product', expiryDate: 'YYYY-MM-DD' };
+    
+    // Add the new product to the array
+    expiryTable.push(newProduct);
+
+    // Save updated data to localStorage
+    localStorage.setItem('expiryTable', JSON.stringify(expiryTable));
+
+    // Re-render the table
+    renderTable(expiryTable);
+}
+
+// Function to edit a specific row
+function editRow(button) {
+    const row = button.parentElement.parentElement;
+
+    // Make product name and expiry date editable
+    row.cells[0].setAttribute('contenteditable', 'true');
+    row.cells[1].setAttribute('contenteditable', 'true');
+
+    // Show "Save" button and hide "Edit" button
+    button.style.display = 'none'; // Hide Edit button
+    button.nextElementSibling.style.display = 'inline'; // Show Save button
+}
+
+// Function to save changes to a specific row
+function saveRow(button) {
+    const row = button.parentElement.parentElement;
+
+    // Make product name and expiry date non-editable
+    row.cells[0].removeAttribute('contenteditable');
+    row.cells[1].removeAttribute('contenteditable');
+
+    // Save updated data to localStorage
+    const storedData = localStorage.getItem('expiryTable');
+    const expiryTable = storedData ? JSON.parse(storedData) : [];
+
+    const index = Array.from(row.parentElement.children).indexOf(row); // Find row index
+    expiryTable[index] = {
+        name: row.cells[0].textContent,
+        expiryDate: row.cells[1].textContent
+    };
+
+    localStorage.setItem('expiryTable', JSON.stringify(expiryTable));
+
+    // Show "Edit" button and hide "Save" button
+    button.style.display = 'none'; // Hide Save button
+    button.previousElementSibling.style.display = 'inline'; // Show Edit button
+
+    alert('Changes saved!');
+}
+
+// Function to delete a specific row
+function deleteRow(button) {
+    const row = button.parentElement.parentElement;
+
+    // Remove the selected row from the table
+    const storedData = localStorage.getItem('expiryTable');
+    const expiryTable = storedData ? JSON.parse(storedData) : [];
+
+    const index = Array.from(row.parentElement.children).indexOf(row); // Find row index
+    expiryTable.splice(index, 1); // Remove item from array
+
+    localStorage.setItem('expiryTable', JSON.stringify(expiryTable));
+
+    renderTable(expiryTable); // Re-render the table
+}
+</script>
+
+</main>
+</body>
+</html>

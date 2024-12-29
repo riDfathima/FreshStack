@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FreshStack</title>
+    <style>
+        body {
+            font-family: Verdana, sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: rgb(252, 141, 197);
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgb(220, 223, 225);
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container h2 {
+            text-align: center;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 2px solid hsl(0, 0%, 0%);
+        }
+
+        .login-container button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            background-color: #4bac4e;
+            color: rgb(0, 0, 0);
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-container button:hover {
+            background-color: #4bac4e;
+        }
+
+        .dashboard {
+            display: none; 
+        }
+
+        .dashboard h2 {
+            text-align: center;
+        }
+
+        .dashboard .card-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .dashboard .card {
+            width: calc(30% - 20px);
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard .card h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<header>
+    <h1>FreshStack</h1>
+    <h2>🍄🥬🍒🍓🧃🍫🥐🍞</h2>
+    <p>✨Manage Your Product Expiries with Ease✨</p>
+</header>
+
+<nav>
+    <div>
+        <a href="#dashboard" id="dashboard-link" style="display:none;">Dashboard</a>
+    </div>
+    <div id="auth-links">
+        <a href="#login" id="login-link">Login</a>
+    </div>
+</nav>
+
+
+<main id="content">
+    <div class="login-container" id="login-form">
+        <h2>Login</h2>
+        <form onsubmit="handleLogin(event)">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+<body>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+
+            if (username) {
+                // Save login state in session storage
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('username', username); // Optional: Save username
+
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Please enter your username.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+    <title>Products - FreshStack</title>
+    <style>
+        body {
+            font-family: Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: rgb(252, 141, 197);
+            color: rgb(218, 57, 57);
+            padding: 20px;
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            border: 3px solid#f4baba;
+            padding: 8px;
+        }
+        table th {
+            background-color: #b6e2ee;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Products</h1>
+        <h2>🍎🍋🍉🥦🥒🥑🫑🌶️🥝🍇🌽🥬🧅🍊🍅🍍🥐🥚🍞🧀🧈🥫🍪🍫🧃🥖🍧🧉🧂🍬🥞</h2>
+    </header>
+
+    <main>
+        <!-- Back to Dashboard Button -->
+        <div style="text-align:center; margin-bottom: 20px;">
+            
+        </div>
+
+        <!-- Add Product Button -->
+        <div style="text-align:center; margin-bottom: 20px;">
+            <button onclick="addProduct()">Add Product</button>
+        </div>
+
+        <!-- Products Table -->
+        <table id="products-table">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th> <!-- New Stock Column -->
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="products-body">
+                <!-- Rows will be dynamically generated -->
+            </tbody>
+        </table>
+
+    </main>
+
+    <!-- JavaScript for Managing Products -->
+    <script>
+        // Load product data from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedData = localStorage.getItem('productTable');
+            const productTable = storedData ? JSON.parse(storedData) : [];
+
+            renderTable(productTable);
+        });
+
+        // Function to render the product table
+        function renderTable(productTable) {
+            const tableBody = document.getElementById('products-body');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            productTable.forEach((product, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.id}</td>
+                    <td>${product.name}</td>
+                    <td>${product.category}</td>
+                    <td>${product.price}</td>
+                    <td>${product.stock}</td> <!-- New Stock Value -->
+                    <td>
+                        <button onclick="editRow(${index})">Edit</button>
+                        <button onclick="saveRow(${index})" style="display:none;">Save</button>
+                        <button class="delete-btn" onclick="deleteRow(${index})">Delete</button>
+                    </td>`;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to add a new product
+        function addProduct() {
+            const storedData = localStorage.getItem('productTable');
+            const productTable = storedData ? JSON.parse(storedData) : [];
+
+            const newProduct = {
+                id: productTable.length + 1,
+                name: 'New Product',
+                category: 'Category',
+                price: 'Rs0/-',
+                stock: '1' // Default stock value
+            };
+
+            productTable.push(newProduct);
+            localStorage.setItem('productTable', JSON.stringify(productTable));
+            
+            renderTable(productTable); // Re-render the table
+        }
+
+        // Function to edit a specific row
+        function editRow(index) {
+            const tableBody = document.getElementById('products-body');
+            const row = tableBody.rows[index];
+
+            // Make all cells in the row editable except the ID
+            for (let i = 1; i <= 4; i++) { // Include Stock column
+                row.cells[i].setAttribute('contenteditable', 'true');
+                row.cells[i].style.backgroundColor = '#f9f9f9'; // Highlight editable cells
+            }
+
+            // Show "Save" button and hide "Edit" button
+            row.cells[5].children[0].style.display = 'none'; // Edit button
+            row.cells[5].children[1].style.display = 'inline'; // Save button
+        }
+
+        // Function to save changes to a specific row
+        function saveRow(index) {
+            const storedData = localStorage.getItem('productTable');
+            const productTable = storedData ? JSON.parse(storedData) : [];
+
+            const tableBody = document.getElementById('products-body');
+            const row = tableBody.rows[index];
+
+            // Update product data based on edited row
+            productTable[index] = {
+                id: row.cells[0].textContent,
+                name: row.cells[1].textContent,
+                category: row.cells[2].textContent,
+                price: row.cells[3].textContent,
+                stock: row.cells[4].textContent // Save Stock value
+            };
+
+            localStorage.setItem('productTable', JSON.stringify(productTable));
+
+            // Make all cells non-editable and remove highlight
+            for (let i = 1; i <= 4; i++) { // Include Stock column
+                row.cells[i].removeAttribute('contenteditable');
+                row.cells[i].style.backgroundColor = ''; // Remove highlight
+            }
+
+            // Show "Edit" button and hide "Save" button
+            row.cells[5].children[0].style.display = 'inline'; // Edit button
+            row.cells[5].children[1].style.display = 'none'; // Save button
+
+            alert('Changes saved!');
+        }
+
+        // Function to delete a specific row
+        function deleteRow(index) {
+            const storedData = localStorage.getItem('productTable');
+            const productTable = storedData ? JSON.parse(storedData) : [];
+
+            // Remove the selected product from the array
+            productTable.splice(index, 1);
+
+            // Update IDs to maintain sequence
+            productTable.forEach((product, i) => {
+                product.id = i + 1; // Reassign IDs starting from 1
+            });
+
+            localStorage.setItem('productTable', JSON.stringify(productTable));
+            
+            renderTable(productTable); // Re-render the table
+        }
+    </script>
+
+</body>
+</html>
