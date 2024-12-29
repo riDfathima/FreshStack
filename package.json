@@ -5,6 +5,7 @@
     "main": "login.html",
     "scripts": {
       "start": "lite-server"
+        "build": "echo 'No build process needed for this project.'"
     },
     "author": "ridha",
     "license": "MIT",
