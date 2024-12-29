@@ -1,0 +1,16 @@
+{
+    "name": "freshstack-expiry-management",
+    "version": "1.0.0",
+    "description": "A web-based expiry management system for tracking product expiries.",
+    "main": "login.html",
+    "scripts": {
+      "start": "lite-server"
+    },
+    "author": "ridha",
+    "license": "MIT",
+    "dependencies": {},
+    "devDependencies": {
+      "lite-server": "^2.6.1"
+    }
+  }
+  
